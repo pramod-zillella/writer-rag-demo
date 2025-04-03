@@ -11,8 +11,7 @@ from langchain_pinecone import PineconeVectorStore
 # Set page configuration
 st.set_page_config(
     page_title="Writer AI RAG Demo",
-    page_icon="🤖",
-    layout="wide"
+    layout="centered"
 )
 
 # Initialize session state for current question if it doesn't exist
