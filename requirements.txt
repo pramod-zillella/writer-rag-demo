@@ -1,4 +1,4 @@
-langchain
+# langchain
 langsmith
 langchain-openai
 notebook
@@ -8,3 +8,4 @@ requests
 tqdm
 writerai
 streamlit
+langchain-community
