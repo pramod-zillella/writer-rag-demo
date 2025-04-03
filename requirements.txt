@@ -2,7 +2,7 @@ langchain
 langsmith
 langchain-openai
 notebook
-pinecone-client
+pinecone
 python-dotenv
 requests
 tqdm
