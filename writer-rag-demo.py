@@ -125,7 +125,14 @@ with st.container():
         st.markdown("<h1 style='text-align: center;'>Writer AI RAG Application</h1>", unsafe_allow_html=True)
         st.markdown("<h4 style='text-align: center;'>Ask questions about Writer's products, services, and capabilities</h4>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center;'>To get started, try one of these example questions:</p>", unsafe_allow_html=True)
-
+        
+with st.container():
+    col1, col2, col3 = st.columns([1,8,1])
+    with col2:
+        # Show the image by referencing the PNG file.
+        # Make sure 'writer-rag-flow.png' is in the same directory or in an accessible path.
+        st.image("writer-rag-flow.png", use_container_width=True, caption="Writer AI RAG Flow Architecture")
+        
 # Example questions as buttons
 with st.container():
     col1, col2 = st.columns(2)
