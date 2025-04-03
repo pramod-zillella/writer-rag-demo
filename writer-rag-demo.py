@@ -5,7 +5,8 @@ from writerai import Writer
 from typing import List
 from pinecone import Pinecone
 from langchain_openai import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone as LangChainPinecone
+# from langchain.vectorstores import Pinecone as LangChainPinecone
+from langchain_pinecone import PineconeVectorStore
 
 # Set page configuration
 st.set_page_config(
@@ -42,7 +43,7 @@ index_name = "writer-docs"
 # Get vector database retriever
 @st.cache_resource
 def get_vector_db_retriever():
-    vectorstore = LangChainPinecone.from_existing_index(index_name, embd)
+    vectorstore = PineconeVectorStore.from_existing_index(index_name, embd)
     return vectorstore.as_retriever(search_kwargs={"k": 5})
 
 # Create retriever instance
@@ -196,3 +197,5 @@ if prompt:
     
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
+
+    

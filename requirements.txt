@@ -9,3 +9,4 @@ tqdm
 writerai
 streamlit
 langchain-community
+langchain-pinecone
