@@ -1,0 +1,10 @@
+langchain
+langsmith
+langchain-openai
+notebook
+pinecone-client
+python-dotenv
+requests
+tqdm
+writerai
+streamlit
