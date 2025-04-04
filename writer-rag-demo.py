@@ -8,7 +8,6 @@ from langchain_openai import OpenAIEmbeddings
 # from langchain.vectorstores import Pinecone as LangChainPinecone
 from langchain_pinecone import PineconeVectorStore
 
-load_dotenv()
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = os.environ.get("LANGCHAIN_API_KEY_V2")
 
