@@ -26,7 +26,17 @@ MODEL_NAME = "palmyra-x-004"
 MODEL_PROVIDER = "writer"
 APP_VERSION = 1.0
 RAG_SYSTEM_PROMPT = """You are an AI assistant specializing in Writer’s products and documentation. Use only the provided retrieved context to answer questions related to Writer’s tools, features, or policies. 
-If the context does not provide enough information, respond with "I don’t know." Keep your answers concise (5 sentences maximum) and maintain a professional tone.
+If the context does not provide enough information, respond with "I don’t know." Keep your answers concise and maintain a professional tone.
+"""
+QUERY_REWRITE_PROMPT = """
+You are a helpful assistant that rewrites user questions into standalone, well-formed search queries for a retrieval-augmented AI assistant.
+This assistant helps users learn about Writer AI's products, services, capabilities, customers, and use cases.
+
+When rewriting:
+- Always expand ambiguous references like "writer" into "Writer AI"
+- Preserve the user's intent while making it more specific
+- Focus on the core question being asked
+- Avoid greetings or casual phrasing — treat it like a search query
 """
 
 # Initialize clients and services
@@ -83,13 +93,22 @@ def call_writer(messages: List[dict]) -> str:
         messages=messages,
     )
 
+@traceable(run_type="llm", name="rewrite_query")
+def rewrite_query(original_question: str) -> str:
+    messages = [
+        {"role": "system", "content": QUERY_REWRITE_PROMPT},
+        {"role": "user", "content": f"Rewrite this query for better search: {original_question}"}
+    ]
+    return call_writer(messages).choices[0].message.content.strip()
+    
 @traceable(run_type="chain")
 def langsmith_rag(question: str):
+    rewritten_query = rewrite_query(question)
     with st.spinner("Retrieving relevant documents..."):
-        documents = retrieve_documents(question)
+        documents = retrieve_documents(rewritten_query)
     
     with st.spinner("Generating response with Writer's Palmyra..."):
-        response = generate_response(question, documents)
+        response = generate_response(rewritten_query, documents)
     
     # Extract source URLs from document metadata
     sources = []
@@ -100,40 +119,20 @@ def langsmith_rag(question: str):
                 sources.append(source_url)
     
     return response.choices[0].message.content
-
-# # Create sidebar with information
-# with st.sidebar:
-#     st.header("About this Demo")
-#     st.markdown("""
-#     This application demonstrates a RAG implementation using:
-    
-#     - **Writer's Palmyra LLM** for generation
-#     - **Pinecone** as the vector database
-#     - **LangChain** for the RAG pipeline
-#     - **LangSmith** for tracing and evaluation
-    
-#     The knowledge base consists of Writer's documentation, allowing the model to answer questions about Writer's products and services.
-#     """)
-    
-#     st.divider()
-#     st.markdown(f"**Model**: {MODEL_NAME}")
-#     st.markdown(f"**App Version**: {APP_VERSION}")
-
-
-
+# ----------------------------- Streamlit-Interface-----------------------------
 with st.container():
-    col1, col2, col3 = st.columns([1, 6, 1])
+    col1, col2, col3 = st.columns([1, 12, 1])
     with col2:
         st.markdown("<h1 style='text-align: center;'>Writer AI RAG Application</h1>", unsafe_allow_html=True)
-        st.markdown("<h4 style='text-align: center;'>Ask questions about Writer's products, services, and capabilities</h4>", unsafe_allow_html=True)
+        st.markdown("<h6 style='text-align: center;'>Ask questions about Writer's products, services, and capabilities</h6>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center;'>To get started, try one of these example questions:</p>", unsafe_allow_html=True)
         
 with st.container():
-    col1, col2, col3 = st.columns([1,8,1])
+    col1, col2, col3 = st.columns([1,9,1])
     with col2:
         # Show the image by referencing the PNG file.
         # Make sure 'writer-rag-flow.png' is in the same directory or in an accessible path.
-        st.image("writer-rag-flow.png", use_container_width=True, caption="Writer AI RAG Flow Architecture")
+        st.image("writer-rag-flow-updated.png", use_container_width=True, caption="Writer AI RAG Flow Architecture")
         
 # Example questions as buttons
 with st.container():
@@ -141,20 +140,14 @@ with st.container():
     with col1:
         if st.button("How does Writer's Palmyra compare to other generative AI models in the enterprise space?"):
             st.session_state.current_question = "How does Writer's Palmyra LLM compare to other generative AI models in the enterprise space?"
-        if st.button("Explain Writer's approach to context window optimization?"):
-            st.session_state.current_question = "Explain Writer's approach to context window optimization and how it compares to competitors?"
-        if st.button("How does Writer's context-aware text splitting enhance the processing of lengthy documents?"):
-            st.session_state.current_question = "How does Writer's context-aware text splitting enhance the processing of lengthy documents in AI applications?"
+        if st.button("What are the successful enterprise use cases for Writer's AI platform?"):
+            st.session_state.current_question = "What are the successful enterprise use cases for Writer's AI platform?"
 
     with col2:
         if st.button("How does Writer handle hallucinations in enterprise contexts?"):
             st.session_state.current_question = "How does Writer handle hallucinations in enterprise contexts compared to other commercial LLMs?"
         if st.button("How is Writer incorporating agentic AI into Palmyra's enterprise workflow roadmap?"):
-            st.session_state.current_question = "How is Writer incorporating agentic AI into Palmyra's enterprise workflow roadmap?"
-        if st.button("What are the successful enterprise use cases for Writer's AI platform?"):
-            st.session_state.current_question = "What are the successful enterprise use cases for Writer's AI platform?"
-
-# st.divider()
+            st.session_state.current_question = "How is Writer incorporating agentic AI into P  almyra's enterprise workflow roadmap?"
 
 # Initialize chat history
 if "messages" not in st.session_state:
