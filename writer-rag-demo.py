@@ -103,8 +103,7 @@ def rewrite_query(original_question: str) -> str:
     
 @traceable(run_type="chain")
 def langsmith_rag(question: str):
-    with st.spinner("Rewriting search optimal query..."):
-        rewritten_query = rewrite_query(question)
+    rewritten_query = rewrite_query(question)
     with st.spinner("Retrieving relevant documents..."):
         documents = retrieve_documents(rewritten_query)
     
@@ -148,7 +147,7 @@ with st.container():
         if st.button("How does Writer handle hallucinations in enterprise contexts?"):
             st.session_state.current_question = "How does Writer handle hallucinations in enterprise contexts compared to other commercial LLMs?"
         if st.button("How is Writer incorporating agentic AI into Palmyra's enterprise workflow roadmap?"):
-            st.session_state.current_question = "How is Writer incorporating agentic AI into P  almyra's enterprise workflow roadmap?"
+            st.session_state.current_question = "How is Writer incorporating agentic AI into Palmyra's enterprise workflow roadmap?"
 
 # Initialize chat history
 if "messages" not in st.session_state:
