@@ -50,13 +50,13 @@ def initialize_clients():
 writer_client, pc, embd = initialize_clients()
 
 # Define the Pinecone index name
-index_name = "writer-docs"
+index_name = "writer-cleaned-docs"
 
 # Get vector database retriever
 @st.cache_resource
 def get_vector_db_retriever():
     vectorstore = PineconeVectorStore.from_existing_index(index_name, embd)
-    return vectorstore.as_retriever(search_kwargs={"k": 5})
+    return vectorstore.as_retriever(search_kwargs={"k": 3})
 
 # Create retriever instance
 retriever = get_vector_db_retriever()
