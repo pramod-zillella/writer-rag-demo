@@ -103,7 +103,8 @@ def rewrite_query(original_question: str) -> str:
     
 @traceable(run_type="chain")
 def langsmith_rag(question: str):
-    rewritten_query = rewrite_query(question)
+    with st.spinner("Rewriting search optimal query..."):
+        rewritten_query = rewrite_query(question)
     with st.spinner("Retrieving relevant documents..."):
         documents = retrieve_documents(rewritten_query)
     
