@@ -50,7 +50,7 @@ def initialize_clients():
 writer_client, pc, embd = initialize_clients()
 
 # Define the Pinecone index name
-index_name = "writer-cleaned-docs"
+index_name = "writer-docs-gpt"
 
 # Get vector database retriever
 @st.cache_resource
